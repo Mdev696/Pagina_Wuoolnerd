@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin - Wuool Nerd</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Orbitron:wght@400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --cor-principal: #00b4d8;
+            --cor-fundo: #f0f2f5;
+            --cor-card: #ffffff;
+            --cor-texto: #333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: var(--cor-fundo);
+            color: var(--cor-texto);
+            line-height: 1.6;
+        }
+
+        #area-cabecalio {
+            background-color: #1a1a1a;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            border-bottom: 4px solid var(--cor-principal);
+        }
+
+        #area-logo h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5em;
+            letter-spacing: 2px;
+        }
+
+        .branco {
+            color: var(--cor-principal);
+        }
+
+        #container {
+            max-width: 1300px;
+            margin: 20px auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 0 15px;
+        }
+
+        .coluna-lateral {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        #area-postagens {
+            flex: 2.5;
+            min-width: 350px;
+        }
+
+        .postagem-admin {
+            background: var(--cor-card);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        #preview {
+            max-width: 100%;
+            margin-top: 15px;
+            display: none;
+            border: 2px solid var(--cor-principal);
+        }
+
+        .btn-publicar {
+            background: var(--cor-principal);
+            color: white;
+            border: none;
+            padding: 15px;
+            width: 100%;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .conteudo-lateral {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            border-bottom: 2px solid var(--cor-principal);
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            font-size: 1.1em;
+        }
+
+        .links-destaque a,
+        .redes-sociais a {
+            display: block;
+            background: #eee;
+            margin-bottom: 5px;
+            padding: 8px;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+    <header id="area-cabecalio">
+        <div id="area-logo">
+            <h1>WUOOL<span class="branco">NERD</span></h1>
+        </div>
+    </header>
+    <main id="container">
+        <aside class="coluna-lateral">
+            <div class="conteudo-lateral">
+                <h3>Animes</h3>
+                <div class="links-destaque">
+                    <a href="#">Temporada de Outono</a>
+                    <a href="#">Melhores de 2024</a>
+                    <a href="#">Guia Crunchyroll</a>
+                </div>
+            </div>
+            <div class="conteudo-lateral">
+                <h3>+ Nerd</h3>
+                <div class="links-destaque">
+                    <a href="#">Colecionáveis</a>
+                    <a href="#">HQs & Mangás</a>
+                    <a href="#">Tecnologia</a>
+                </div>
+            </div>
+        </aside>
+
+        <section id="area-postagens">
+            <div class="postagem-admin">
+                <h2>📝 Painel de Edição</h2>
+                <label>Título:</label><input type="text" id="titulo">
+                <label>Imagem:</label><input type="file" id="foto" accept="image/*">
+                <img id="preview">
+                <label>Conteúdo:</label><textarea id="conteudo" rows="8"></textarea>
+                <label>Autor:</label><input type="text" id="autor" placeholder="@seuinsta">
+                <button class="btn-publicar" onclick="publicar()">PUBLICAR EM CONTEUDO.HTML</button>
+            </div>
+        </section>
+
+        <aside class="coluna-lateral">
+            <div class="conteudo-lateral">
+                <h3>Redes Sociais</h3>
+                <div class="redes-sociais"><a href="#">Instagram</a><a href="#">YouTube</a><a href="#">WhatsApp</a>
+                </div>
+            </div>
+            <div class="conteudo-lateral">
+                <h3>Críticas</h3>
+                <p style="font-size: 0.9em;">Review: Deadpool & Wolverine...</p>
+            </div>
+        </aside>
+    </main>
+
+    <script>
+        const fotoInput = document.getElementById('foto');
+        const preview = document.getElementById('preview');
+        let imagemBase64 = "";
+
+        fotoInput.addEventListener('change', function () {
+            const reader = new FileReader();
+            reader.onload = function () { imagemBase64 = reader.result; preview.src = reader.result; preview.style.display = 'block'; }
+            if (fotoInput.files[0]) reader.readAsDataURL(fotoInput.files[0]);
+        });
+
+        function publicar() {
+            const titulo = document.getElementById('titulo').value;
+            const conteudo = document.getElementById('conteudo').value;
+            const autor = document.getElementById('autor').value;
+            if (!titulo || !conteudo || !imagemBase64) return alert("Preencha tudo!");
+
+            const data = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+            const novaNoticia = { titulo, conteudo, autor, data, imagem: imagemBase64 };
+
+            const noticias = JSON.parse(localStorage.getItem('noticias-wuool')) || [];
+            noticias.unshift(novaNoticia);
+            localStorage.setItem('noticias-wuool', JSON.stringify(noticias));
+
+            alert("Sucesso! Indo para a página de conteúdo...");
+            window.location.href = "conteudo.html";
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wuool Nerd - Notícias Geek</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Orbitron:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* Variáveis Originais */
+        :root {
+            --cor-principal: #00b4d8;
+            --cor-fundo: #121212;
+            --cor-card: #ffffff;
+            --cor-texto: #333;
+            --cor-acentuacao: #f7b600;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #f0f2f5;
+            color: var(--cor-texto);
+            line-height: 1.6;
+        }
+
+        /* PAINEL DE INPUTS (NOVO) */
+        #admin-panel {
+            background: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: 2px dashed var(--cor-principal);
+        }
+
+        .admin-input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+
+        .file-label {
+            display: block;
+            background: #eee;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            font-weight: bold;
+            border: 1px solid #ccc;
+        }
+
+        #btn-postar {
+            background: var(--cor-principal);
+            color: white;
+            border: none;
+            padding: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 4px;
+            width: 100%;
+        }
+
+        /* Estrutura Original do Cabeçalho */
+        #area-cabecalio {
+            background-color: #1a1a1a;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            border-bottom: 4px solid var(--cor-principal);
+        }
+
+        #area-logo h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5em;
+            letter-spacing: 2px;
+        }
+
+        .branco {
+            color: var(--cor-principal);
+        }
+
+        #area-menu {
+            margin-top: 15px;
+        }
+
+        #area-menu a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 10px 15px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        #area-menu a:hover {
+            color: var(--cor-principal);
+        }
+
+        /* Layout em Colunas */
+        #container {
+            max-width: 1100px;
+            margin: 20px auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 0 15px;
+        }
+
+        #area-postagens {
+            flex: 3;
+            min-width: 300px;
+        }
+
+        #area-lateral {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        /* Estilo dos Cards de Notícia (Original com ajuste de imagem) */
+        .postagem {
+            background: var(--cor-card);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .postagem h2 {
+            color: #1a1a1a;
+            margin-bottom: 10px;
+        }
+
+        .data {
+            color: #888;
+            font-size: 0.85em;
+        }
+
+        /* AJUSTE PARA CABEREM 3 NOTÍCIAS NO BODY */
+        .postagem img {
+            width: 100%;
+            max-height: 300px;
+            /* Altura controlada para caberem mais posts */
+            object-fit: cover;
+            border-radius: 5px;
+            margin: 15px 0;
+            display: block;
+        }
+
+        .tese2 {
+            display: block;
+            background: #f9f9f9;
+            border-left: 5px solid var(--cor-principal);
+            padding: 15px;
+            margin: 15px 0;
+            font-style: italic;
+        }
+
+        .btn-ler-mais {
+            color: var(--cor-principal);
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+            display: block;
+            margin-top: 10px;
+        }
+
+        /* Lateral e Rodapé */
+        .conteudo-lateral {
+            background: var(--cor-card);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            border-bottom: 2px solid var(--cor-principal);
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            font-size: 1.1em;
+        }
+
+        .redes-sociais a {
+            display: block;
+            background: #eee;
+            margin-bottom: 5px;
+            padding: 8px;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #333;
+            transition: 0.2s;
+        }
+
+        .redes-sociais a:hover {
+            background: var(--cor-principal);
+            color: white;
+        }
+
+        #rodape {
+            text-align: center;
+            padding: 30px;
+            background: #1a1a1a;
+            color: white;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 768px) {
+            #container {
+                flex-direction: column;
+            }
+
+            #area-logo h1 {
+                font-size: 1.8em;
+            }
+
+            .postagem img {
+                max-height: 200px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header id="area-cabecalio">
+        <div id="area-logo">
+            <h1>WUOOL<span class="branco">NERD</span></h1>
+        </div>
+        <nav id="area-menu">
+            <a href="#">Home</a>
+            <a href="#">Jogos</a>
+            <a href="#">Cinema</a>
+        </nav>
+    </header>
+
+    <main id="container">
+
+        <section id="area-postagens">
+
+            <div id="admin-panel">
+                <input type="text" id="input-titulo" class="admin-input" placeholder="Título da Notícia">
+                <label for="input-foto" class="file-label">📸 Selecionar Foto/Tirar Foto</label>
+                <input type="file" id="input-foto" accept="image/*" style="display: none;">
+                <textarea id="input-conteudo" class="admin-input" rows="4"
+                    placeholder="Escreva a notícia aqui..."></textarea>
+                <button id="btn-postar" onclick="adicionarPostagem()">Publicar Agora</button>
+            </div>
+
+            <div id="feed-dinamico"></div>
+
+            <article class="postagem">
+                <h2>Suits L.A ganha a sua primeira imagem com Stephen Amell</h2>
+                <span class="data">Postado em 23 de julho de 2024</span>
+                <img src="IMG/stephan.avif" alt="Stephen Amell em Suits LA">
+                <p>Depois de 8 anos na CW, o ator Stephen Amell é o novo protagonista de Suits L.A. A série revelou sua
+                    primeira imagem...</p>
+                <a class="btn-ler-mais">Ler mais</a>
+            </article>
+
+            <article class="postagem">
+                <h2>Batman e Robin: Ano Um é anunciado pela DC Comics</h2>
+                <span class="data">Postado em 23 de julho de 2024</span>
+                <img src="IMG/Batman_Ano_Um.jpg" alt="Batman e Robin">
+                <p>Batman é uma das maiores franquias da Warner... A história será baseada na fase em que Bruce adota
+                    Dick Grayson.</p>
+                <span class="tese2">“No fundo, esta não é uma história de Batman & Robin,” explica Mark Waid. “É uma
+                    história de Bruce/Dick.”</span>
+                <a class="btn-ler-mais">Ler mais</a>
+            </article>
+        </section>
+
+        <aside id="area-lateral">
+            <div class="conteudo-lateral">
+                <h3>Redes Sociais</h3>
+                <div class="redes-sociais">
+                    <a href="https://www.instagram.com/wuoolnerd">Instagram</a>
+                    <a href="#">YouTube</a>
+                    <a href="#">X (Twitter)</a>
+                    <a href="#">WhatsApp</a>
+                </div>
+            </div>
+
+            <div class="conteudo-lateral">
+                <h3>Antigas</h3>
+                <p style="font-size: 0.9em;">Novo teaser de Stranger Things...</p>
+                <a href="#" style="color: var(--cor-principal);">Leia mais</a>
+            </div>
+        </aside>
+
+    </main>
+
+    <footer id="rodape">
+        <p>&copy; 2024 Wuool Nerd - Todos os direitos reservados</p>
+    </footer>
+
+    <script>
+        function adicionarPostagem() {
+            const titulo = document.getElementById('input-titulo').value;
+            const conteudo = document.getElementById('input-conteudo').value;
+            const fotoInput = document.getElementById('input-foto');
+            const feed = document.getElementById('feed-dinamico');
+
+            if (!titulo || !conteudo || !fotoInput.files[0]) {
+                alert("Por favor, preencha o título, o texto e escolha uma imagem.");
+                return;
+            }
+
+            const dataAtual = new Date();
+            const meses = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"];
+            const dataFormatada = `Postado em ${dataAtual.getDate()} de ${meses[dataAtual.getMonth()]} de ${dataAtual.getFullYear()}`;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const novoArtigo = document.createElement('article');
+                novoArtigo.className = 'postagem';
+
+                // Resumo do conteúdo
+                const resumo = conteudo.length > 250 ? conteudo.substring(0, 250) + "..." : conteudo;
+
+                novoArtigo.innerHTML = `
+                    <h2>${titulo}</h2>
+                    <span class="data">${dataFormatada}</span>
+                    <img src="${e.target.result}" alt="Capa">
+                    <p>${resumo}</p>
+                    <a class="btn-ler-mais">Ler mais</a>
+                `;
+
+                feed.prepend(novoArtigo);
+
+                // Limpar inputs
+                document.getElementById('input-titulo').value = '';
+                document.getElementById('input-conteudo').value = '';
+                document.getElementById('input-foto').value = '';
+                document.querySelector('.file-label').innerText = "📸 Selecionar Foto/Tirar Foto";
+                document.querySelector('.file-label').style.background = "#eee";
+            };
+            reader.readAsDataURL(fotoInput.files[0]);
+        }
+
+        document.getElementById('input-foto').addEventListener('change', function () {
+            if (this.files[0]) {
+                document.querySelector('.file-label').innerText = "✅ Imagem Selecionada!";
+                document.querySelector('.file-label').style.background = "#d1fae5";
+            }
+        });
+    </script>
+
+</body>
+
+</html>
