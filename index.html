@@ -5,17 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wuool Nerd - Notícias Geek</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Orbitron:wght@400;700&display=swap"
         rel="stylesheet">
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
-        /* Variáveis Originais */
         :root {
-            --cor-principal: #00b4d8;
-            --cor-fundo: #121212;
+            --cor-principal: #800080;
+            --cor-fundo: #f0f2f5;
             --cor-card: #ffffff;
             --cor-texto: #333;
-            --cor-acentuacao: #f7b600;
+            --cor-borda: #e0e0e0;
         }
 
         * {
@@ -26,64 +28,27 @@
 
         body {
             font-family: 'Roboto', sans-serif;
-            background: #f0f2f5;
+            background: var(--cor-fundo);
             color: var(--cor-texto);
             line-height: 1.6;
+            scroll-behavior: smooth;
+            /* Adicionado para um deslize suave ao clicar no link */
         }
 
-        /* PAINEL DE INPUTS (NOVO) */
-        #admin-panel {
-            background: #fff;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            border: 2px dashed var(--cor-principal);
-        }
-
-        .admin-input {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-family: inherit;
-        }
-
-        .file-label {
-            display: block;
-            background: #eee;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 4px;
-            cursor: pointer;
-            text-align: center;
-            font-weight: bold;
-            border: 1px solid #ccc;
-        }
-
-        #btn-postar {
-            background: var(--cor-principal);
-            color: white;
-            border: none;
-            padding: 12px;
-            font-weight: bold;
-            cursor: pointer;
-            border-radius: 4px;
-            width: 100%;
-        }
-
-        /* Estrutura Original do Cabeçalho */
+        /* Cabeçalho */
         #area-cabecalio {
             background-color: #1a1a1a;
             color: white;
-            padding: 20px 0;
-            text-align: center;
+            padding: 15px 40px;
             border-bottom: 4px solid var(--cor-principal);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         #area-logo h1 {
             font-family: 'Orbitron', sans-serif;
-            font-size: 2.5em;
+            font-size: 2.2em;
             letter-spacing: 2px;
         }
 
@@ -91,271 +56,346 @@
             color: var(--cor-principal);
         }
 
-        #area-menu {
-            margin-top: 15px;
+        .social-icons-topo {
+            display: flex;
+            gap: 15px;
         }
 
-        #area-menu a {
-            color: #ddd;
-            text-decoration: none;
-            padding: 10px 15px;
-            font-weight: bold;
+        .social-icons-topo a {
+            color: white;
+            font-size: 20px;
             transition: 0.3s;
         }
 
-        #area-menu a:hover {
+        .social-icons-topo a:hover {
             color: var(--cor-principal);
         }
 
-        /* Layout em Colunas */
+        /* Layout Principal */
         #container {
-            max-width: 1100px;
+            max-width: 1300px;
             margin: 20px auto;
             display: flex;
             flex-wrap: wrap;
-            gap: 20px;
+            gap: 25px;
             padding: 0 15px;
         }
 
         #area-postagens {
-            flex: 3;
-            min-width: 300px;
+            flex: 2.5;
+            min-width: 350px;
         }
 
-        #area-lateral {
-            flex: 1;
-            min-width: 250px;
-        }
-
-        /* Estilo dos Cards de Notícia (Original com ajuste de imagem) */
+        /* Estilo da Postagem */
         .postagem {
             background: var(--cor-card);
             padding: 25px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--cor-borda);
+            margin-bottom: 25px;
         }
 
-        .postagem h2 {
-            color: #1a1a1a;
-            margin-bottom: 10px;
-        }
-
-        .data {
-            color: #888;
-            font-size: 0.85em;
-        }
-
-        /* AJUSTE PARA CABEREM 3 NOTÍCIAS NO BODY */
-        .postagem img {
+        .midia-container {
             width: 100%;
-            max-height: 300px;
-            /* Altura controlada para caberem mais posts */
-            object-fit: cover;
-            border-radius: 5px;
             margin: 15px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #000;
+        }
+
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+        }
+
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .midia-container img {
+            width: 100%;
             display: block;
         }
 
-        .tese2 {
-            display: block;
-            background: #f9f9f9;
-            border-left: 5px solid var(--cor-principal);
-            padding: 15px;
-            margin: 15px 0;
-            font-style: italic;
+        .conteudo-texto {
+            white-space: pre-wrap;
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            color: #444;
         }
 
-        .btn-ler-mais {
-            color: var(--cor-principal);
-            font-weight: bold;
-            text-decoration: none;
-            cursor: pointer;
+        .conteudo-texto.aberto {
             display: block;
-            margin-top: 10px;
+            -webkit-line-clamp: initial;
         }
 
-        /* Lateral e Rodapé */
+        /* Laterais */
+        .coluna-lateral {
+            flex: 1;
+            min-width: 260px;
+        }
+
         .conteudo-lateral {
             background: var(--cor-card);
-            padding: 20px;
-            border-radius: 8px;
+            border-radius: 10px;
             margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 1px solid var(--cor-borda);
         }
 
-        h3 {
-            border-bottom: 2px solid var(--cor-principal);
-            padding-bottom: 5px;
-            margin-bottom: 10px;
+        .conteudo-lateral h3 {
+            background: linear-gradient(90deg, #1a1a1a, var(--cor-principal));
+            color: white;
+            padding: 12px 15px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85em;
             text-transform: uppercase;
-            font-size: 1.1em;
         }
 
-        .redes-sociais a {
+        .links-destaque {
+            padding: 10px;
+        }
+
+        .links-destaque a {
             display: block;
-            background: #eee;
-            margin-bottom: 5px;
-            padding: 8px;
-            border-radius: 4px;
+            padding: 10px 10px 10px 35px;
             text-decoration: none;
-            color: #333;
-            transition: 0.2s;
+            color: #444;
+            font-size: 0.85em;
+            border-bottom: 1px solid #f5f5f5;
+            position: relative;
+            transition: 0.3s;
         }
 
-        .redes-sociais a:hover {
-            background: var(--cor-principal);
+        .links-destaque a::before {
+            content: "\f105";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            left: 12px;
+            color: var(--cor-principal);
+        }
+
+        .links-destaque a:hover {
+            background: #fdf0ff;
+            color: var(--cor-principal);
+            padding-left: 15px;
+        }
+
+        /* Rodapé */
+        footer {
+            background-color: #1a1a1a;
             color: white;
+            padding: 40px 20px 20px;
+            margin-top: 50px;
+            border-top: 4px solid var(--cor-principal);
         }
 
-        #rodape {
+        .footer-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .footer-box h4 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--cor-principal);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .footer-box p,
+        .footer-box li {
+            font-size: 0.9em;
+            color: #bbb;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .footer-social a {
+            color: white;
+            font-size: 20px;
+            transition: 0.3s;
+        }
+
+        .footer-social a:hover {
+            color: var(--cor-principal);
+            transform: scale(1.1);
+        }
+
+        .copyright {
             text-align: center;
-            padding: 30px;
-            background: #1a1a1a;
-            color: white;
             margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #333;
+            font-size: 0.8em;
+            color: #777;
         }
 
         @media (max-width: 768px) {
+            #area-cabecalio {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
             #container {
                 flex-direction: column;
-            }
-
-            #area-logo h1 {
-                font-size: 1.8em;
-            }
-
-            .postagem img {
-                max-height: 200px;
             }
         }
     </style>
 </head>
 
 <body>
-
     <header id="area-cabecalio">
         <div id="area-logo">
             <h1>WUOOL<span class="branco">NERD</span></h1>
         </div>
-        <nav id="area-menu">
-            <a href="#">Home</a>
-            <a href="#">Jogos</a>
-            <a href="#">Cinema</a>
-        </nav>
+        <div class="social-icons-topo">
+            <a href="#"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#"><i class="fa-brands fa-tiktok"></i></a>
+            <a href="#"><i class="fa-brands fa-youtube"></i></a>
+            <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
+        </div>
     </header>
 
     <main id="container">
-
-        <section id="area-postagens">
-
-            <div id="admin-panel">
-                <input type="text" id="input-titulo" class="admin-input" placeholder="Título da Notícia">
-                <label for="input-foto" class="file-label">📸 Selecionar Foto/Tirar Foto</label>
-                <input type="file" id="input-foto" accept="image/*" style="display: none;">
-                <textarea id="input-conteudo" class="admin-input" rows="4"
-                    placeholder="Escreva a notícia aqui..."></textarea>
-                <button id="btn-postar" onclick="adicionarPostagem()">Publicar Agora</button>
-            </div>
-
-            <div id="feed-dinamico"></div>
-
-            <article class="postagem">
-                <h2>Suits L.A ganha a sua primeira imagem com Stephen Amell</h2>
-                <span class="data">Postado em 23 de julho de 2024</span>
-                <img src="IMG/stephan.avif" alt="Stephen Amell em Suits LA">
-                <p>Depois de 8 anos na CW, o ator Stephen Amell é o novo protagonista de Suits L.A. A série revelou sua
-                    primeira imagem...</p>
-                <a class="btn-ler-mais">Ler mais</a>
-            </article>
-
-            <article class="postagem">
-                <h2>Batman e Robin: Ano Um é anunciado pela DC Comics</h2>
-                <span class="data">Postado em 23 de julho de 2024</span>
-                <img src="IMG/Batman_Ano_Um.jpg" alt="Batman e Robin">
-                <p>Batman é uma das maiores franquias da Warner... A história será baseada na fase em que Bruce adota
-                    Dick Grayson.</p>
-                <span class="tese2">“No fundo, esta não é uma história de Batman & Robin,” explica Mark Waid. “É uma
-                    história de Bruce/Dick.”</span>
-                <a class="btn-ler-mais">Ler mais</a>
-            </article>
-        </section>
-
-        <aside id="area-lateral">
+        <aside class="coluna-lateral">
             <div class="conteudo-lateral">
-                <h3>Redes Sociais</h3>
-                <div class="redes-sociais">
-                    <a href="https://www.instagram.com/wuoolnerd">Instagram</a>
-                    <a href="#">YouTube</a>
-                    <a href="#">X (Twitter)</a>
-                    <a href="#">WhatsApp</a>
-                </div>
+                <h3><i class="fa-solid fa-dragon"></i> Animes</h3>
+                <div id="feed-animes" class="links-destaque"></div>
             </div>
-
             <div class="conteudo-lateral">
-                <h3>Antigas</h3>
-                <p style="font-size: 0.9em;">Novo teaser de Stranger Things...</p>
-                <a href="#" style="color: var(--cor-principal);">Leia mais</a>
+                <h3><i class="fa-solid fa-tv"></i> Plataformas</h3>
+                <div id="feed-plataformas" class="links-destaque"></div>
             </div>
         </aside>
 
+        <section id="area-postagens"></section>
+
+        <aside class="coluna-lateral">
+            <div class="conteudo-lateral">
+                <h3><i class="fa-solid fa-plus"></i> Nerd</h3>
+                <div id="feed-nerd" class="links-destaque"></div>
+            </div>
+            <div class="conteudo-lateral">
+                <h3><i class="fa-solid fa-clock-rotate-left"></i> Antigas</h3>
+                <div id="feed-antigas" class="links-destaque"></div>
+            </div>
+        </aside>
     </main>
 
-    <footer id="rodape">
-        <p>&copy; 2024 Wuool Nerd - Todos os direitos reservados</p>
+    <footer>
+        <div class="footer-container">
+            <div class="footer-box">
+                <h4>WUOOL<span class="branco">NERD</span></h4>
+                <p>O portal definitivo para quem vive a cultura geek. Notícias, reviews e lançamentos em tempo real.</p>
+            </div>
+            <div class="footer-box">
+                <h4>Navegação</h4>
+                <ul style="list-style: none;">
+                    <li style="margin-bottom: 8px;"><a href="#" style="color: #bbb; text-decoration: none;">Início</a>
+                    </li>
+                    <li style="margin-bottom: 8px;"><a href="#" style="color: #bbb; text-decoration: none;">Animes</a>
+                    </li>
+                    <li style="margin-bottom: 8px;"><a href="#" style="color: #bbb; text-decoration: none;">Games</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="footer-box">
+                <h4>Siga-nos</h4>
+                <div class="footer-social">
+                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#"><i class="fa-brands fa-tiktok"></i></a>
+                    <a href="#"><i class="fa-brands fa-youtube"></i></a>
+                    <a href="#"><i class="fa-brands fa-discord"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="copyright">
+            &copy; 2026 Wuool Nerd - Todos os direitos reservados.
+        </div>
     </footer>
 
     <script>
-        function adicionarPostagem() {
-            const titulo = document.getElementById('input-titulo').value;
-            const conteudo = document.getElementById('input-conteudo').value;
-            const fotoInput = document.getElementById('input-foto');
-            const feed = document.getElementById('feed-dinamico');
+        // Configuração do Banco (Supabase)
+        const { createClient } = supabase;
+        const _supabase = createClient("https://xkngtsnzkbmfsugahtsa.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhrbmd0c256a2JtZnN1Z2FodHNhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4OTA2MTcsImV4cCI6MjA5MDQ2NjYxN30.zrk4-ckiw50zUdt1JrTD13SlSLNh1Upn5C7nm12jWEA");
 
-            if (!titulo || !conteudo || !fotoInput.files[0]) {
-                alert("Por favor, preencha o título, o texto e escolha uma imagem.");
+        const container = document.getElementById('area-postagens');
+
+        function extrairId(url) {
+            if (!url) return null;
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : null;
+        }
+
+        async function renderizar() {
+            const { data: noticias, error } = await _supabase
+                .from('noticias')
+                .select('*')
+                .order('timestamp', { ascending: false });
+
+            if (error || !noticias || noticias.length === 0) {
+                container.innerHTML = "<h2 style='text-align:center; opacity:0.3; margin-top:50px;'>Aguardando publicações...</h2>";
                 return;
             }
 
-            const dataAtual = new Date();
-            const meses = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"];
-            const dataFormatada = `Postado em ${dataAtual.getDate()} de ${meses[dataAtual.getMonth()]} de ${dataAtual.getFullYear()}`;
+            noticias.forEach((n) => {
+                const post = document.createElement('article');
+                post.className = 'postagem';
 
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                const novoArtigo = document.createElement('article');
-                novoArtigo.className = 'postagem';
+                // CRIAÇÃO DO ID PARA O DIRECIONAMENTO
+                const noticiaID = `news-${n.id}`;
+                post.id = noticiaID;
 
-                // Resumo do conteúdo
-                const resumo = conteudo.length > 250 ? conteudo.substring(0, 250) + "..." : conteudo;
+                const vidId = extrairId(n.video);
+                let midia = vidId
+                    ? `<div class="midia-container"><div class="video-wrapper"><iframe src="https://www.youtube.com/embed/${vidId}" frameborder="0" allowfullscreen></iframe></div></div>`
+                    : (n.imagem ? `<div class="midia-container"><img src="${n.imagem}"></div>` : "");
 
-                novoArtigo.innerHTML = `
-                    <h2>${titulo}</h2>
-                    <span class="data">${dataFormatada}</span>
-                    <img src="${e.target.result}" alt="Capa">
-                    <p>${resumo}</p>
-                    <a class="btn-ler-mais">Ler mais</a>
+                const dataExibicao = (n.data && n.data !== "null" && n.data !== "") ? n.data : "29/03/2026";
+                const autorFinal = (n.autor && n.autor !== "null") ? `@${n.autor.replace('@', '')}` : "@wuoolnerd";
+
+                post.innerHTML = `
+                    <h2 style="font-family: ${n.fonte_titulo || 'Roboto'}">${n.titulo}</h2>
+                    <small style="color:var(--cor-principal); font-weight:bold;">${n.tema} • ${dataExibicao}</small>
+                    ${midia}
+                    <div class="conteudo-texto" style="font-family: ${n.fonte_conteudo || 'Roboto'}">${n.conteudo}</div>
+                    <button style="border:none; background:none; color:var(--cor-principal); font-weight:bold; cursor:pointer; margin-top:10px;" onclick="this.previousElementSibling.classList.toggle('aberto'); this.innerText = this.innerText === 'LER MAIS' ? 'LER MENOS' : 'LER MAIS';">LER MAIS</button>
+                    <p style="margin-top:15px; font-size:0.8em; color:#777;">Autor: ${autorFinal}</p>
                 `;
+                container.appendChild(post);
 
-                feed.prepend(novoArtigo);
+                // LINK LATERAL DIRECIONADO PARA O ID DA NOTÍCIA
+                const link = `<a href="#${noticiaID}">${n.titulo}</a>`;
+                const t = n.tema ? n.tema.toLowerCase() : "";
 
-                // Limpar inputs
-                document.getElementById('input-titulo').value = '';
-                document.getElementById('input-conteudo').value = '';
-                document.getElementById('input-foto').value = '';
-                document.querySelector('.file-label').innerText = "📸 Selecionar Foto/Tirar Foto";
-                document.querySelector('.file-label').style.background = "#eee";
-            };
-            reader.readAsDataURL(fotoInput.files[0]);
+                if (t.includes("anime") || t.includes("outono")) document.getElementById('feed-animes').innerHTML += link;
+                else if (t.includes("netflix") || t.includes("cinema") || t.includes("marvel")) document.getElementById('feed-plataformas').innerHTML += link;
+                else if (t.includes("nerd")) document.getElementById('feed-nerd').innerHTML += link;
+                else document.getElementById('feed-antigas').innerHTML += link;
+            });
         }
 
-        document.getElementById('input-foto').addEventListener('change', function () {
-            if (this.files[0]) {
-                document.querySelector('.file-label').innerText = "✅ Imagem Selecionada!";
-                document.querySelector('.file-label').style.background = "#d1fae5";
-            }
-        });
+        window.onload = renderizar;
     </script>
-
 </body>
 
 </html>

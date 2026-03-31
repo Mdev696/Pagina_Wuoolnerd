@@ -1,0 +1,22 @@
+create table noticias (
+  id uuid default gen_random_uuid () primary key,
+  tema text,
+  titulo text,
+  fonte_titulo text,
+  conteudo text,
+  fonte_conteudo text,
+  autor text,
+  imagem text,
+  video text,
+  data text,
+  timestamp bigint default extract(
+    epoch
+    from
+      now()
+  ) * 1000
+);
+
+create table acessos (
+  id uuid default gen_random_uuid () primary key,
+  data_acesso date default current_date
+);

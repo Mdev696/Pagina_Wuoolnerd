@@ -5,14 +5,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel Admin - Wuool Nerd</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Orbitron:wght@400;700&display=swap"
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Orbitron:wght@400;700&family=Playfair+Display:wght@700&family=JetBrains+Mono&display=swap"
         rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
         :root {
-            --cor-principal: #00b4d8;
+            --cor-principal: #800080;
             --cor-fundo: #f0f2f5;
             --cor-card: #ffffff;
             --cor-texto: #333;
+            --cor-borda: #e0e0e0;
         }
 
         * {
@@ -28,38 +34,123 @@
             line-height: 1.6;
         }
 
+        /* Cabeçalho */
         #area-cabecalio {
             background-color: #1a1a1a;
             color: white;
-            padding: 20px 0;
-            text-align: center;
+            padding: 15px 40px;
             border-bottom: 4px solid var(--cor-principal);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         #area-logo h1 {
             font-family: 'Orbitron', sans-serif;
-            font-size: 2.5em;
+            font-size: 2.2em;
             letter-spacing: 2px;
+        }
+
+        .social-icons-lateral {
+            display: flex;
+            gap: 20px;
+        }
+
+        .social-icons-lateral a {
+            color: white;
+            font-size: 24px;
+            transition: 0.3s;
+            text-decoration: none;
+        }
+
+        .social-icons-lateral a:hover {
+            color: var(--cor-principal);
+            transform: translateY(-3px);
         }
 
         .branco {
             color: var(--cor-principal);
         }
 
+        /* Container */
         #container {
             max-width: 1300px;
             margin: 20px auto;
             display: flex;
             flex-wrap: wrap;
-            gap: 20px;
+            gap: 25px;
             padding: 0 15px;
         }
 
+        /* Unilaterais */
         .coluna-lateral {
             flex: 1;
-            min-width: 200px;
+            min-width: 260px;
         }
 
+        .conteudo-lateral {
+            background: var(--cor-card);
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 1px solid var(--cor-borda);
+            transition: transform 0.3s;
+        }
+
+        .conteudo-lateral:hover {
+            transform: translateY(-5px);
+        }
+
+        .conteudo-lateral h3 {
+            background: linear-gradient(90deg, #1a1a1a, var(--cor-principal));
+            color: white;
+            padding: 12px 15px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9em;
+            letter-spacing: 1px;
+            border-bottom: 3px solid var(--cor-principal);
+            text-transform: uppercase;
+        }
+
+        .links-destaque {
+            padding: 10px;
+        }
+
+        .links-destaque a {
+            display: block;
+            background: #fff;
+            margin-bottom: 8px;
+            padding: 12px 12px 12px 40px;
+            border-radius: 6px;
+            text-decoration: none;
+            color: #444;
+            font-size: 0.88em;
+            font-weight: 500;
+            border: 1px solid #eee;
+            transition: all 0.3s ease;
+            position: relative;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .links-destaque a::before {
+            content: "\f105";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            left: 15px;
+            color: var(--cor-principal);
+        }
+
+        .links-destaque a:hover {
+            background: var(--cor-principal);
+            color: white;
+            transform: translateX(8px);
+        }
+
+        /* Área de Postagem */
         #area-postagens {
             flex: 2.5;
             min-width: 350px;
@@ -68,68 +159,96 @@
         .postagem-admin {
             background: var(--cor-card);
             padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--cor-borda);
+            margin-bottom: 30px;
         }
 
         label {
             display: block;
             margin-top: 15px;
             font-weight: bold;
+            color: #555;
         }
 
         input,
-        textarea {
+        textarea,
+        select {
             width: 100%;
             padding: 12px;
             margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Roboto', sans-serif;
+            background: #fafafa;
+        }
+
+        /* Gerenciamento */
+        .gerenciar-noticias {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid var(--cor-borda);
+        }
+
+        .item-noticia {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .item-noticia span {
+            font-size: 0.9em;
+            color: #333;
+        }
+
+        .btns-acoes button {
+            padding: 5px 10px;
+            margin-left: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        .btn-edit {
+            background: #2196F3;
+        }
+
+        .btn-del {
+            background: #f44336;
         }
 
         #preview {
             max-width: 100%;
             margin-top: 15px;
             display: none;
-            border: 2px solid var(--cor-principal);
+            border-radius: 8px;
+            border: 3px solid var(--cor-principal);
         }
 
         .btn-publicar {
             background: var(--cor-principal);
             color: white;
             border: none;
-            padding: 15px;
+            padding: 18px;
             width: 100%;
-            border-radius: 6px;
+            border-radius: 8px;
             font-weight: bold;
             cursor: pointer;
-            margin-top: 20px;
-        }
-
-        .conteudo-lateral {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-
-        h3 {
-            border-bottom: 2px solid var(--cor-principal);
-            padding-bottom: 5px;
-            margin-bottom: 10px;
-            text-transform: uppercase;
+            margin-top: 25px;
             font-size: 1.1em;
+            transition: 0.3s;
         }
 
-        .links-destaque a,
-        .redes-sociais a {
-            display: block;
-            background: #eee;
-            margin-bottom: 5px;
-            padding: 8px;
-            border-radius: 4px;
-            text-decoration: none;
-            color: #333;
+        .btn-publicar:hover {
+            filter: brightness(1.2);
         }
     </style>
 </head>
@@ -139,78 +258,227 @@
         <div id="area-logo">
             <h1>WUOOL<span class="branco">NERD</span></h1>
         </div>
+        <div class="social-icons-lateral">
+            <a href="#" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#" title="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+            <a href="#" title="YouTube"><i class="fa-brands fa-youtube"></i></a>
+            <a href="#" title="Facebook"><i class="fa-brands fa-facebook"></i></a>
+            <a href="#" title="X (Twitter)"><i class="fa-brands fa-x-twitter"></i></a>
+        </div>
     </header>
+
     <main id="container">
         <aside class="coluna-lateral">
             <div class="conteudo-lateral">
-                <h3>Animes</h3>
-                <div class="links-destaque">
-                    <a href="#">Temporada de Outono</a>
-                    <a href="#">Melhores de 2024</a>
-                    <a href="#">Guia Crunchyroll</a>
-                </div>
+                <h3><i class="fa-solid fa-dragon"></i> Animes</h3>
+                <div id="lateral-animes" class="links-destaque"></div>
             </div>
             <div class="conteudo-lateral">
-                <h3>+ Nerd</h3>
-                <div class="links-destaque">
-                    <a href="#">Colecionáveis</a>
-                    <a href="#">HQs & Mangás</a>
-                    <a href="#">Tecnologia</a>
-                </div>
+                <h3><i class="fa-solid fa-plus"></i> Nerd</h3>
+                <div id="lateral-maisnerd" class="links-destaque"></div>
             </div>
         </aside>
 
         <section id="area-postagens">
             <div class="postagem-admin">
-                <h2>📝 Painel de Edição</h2>
-                <label>Título:</label><input type="text" id="titulo">
-                <label>Imagem:</label><input type="file" id="foto" accept="image/*">
+                <h2 id="form-title"><i class="fa-solid fa-pen-to-square"></i> Painel de Edição</h2>
+                <input type="hidden" id="edit-id" value="">
+
+                <label>Tema da Notícia:</label>
+                <select id="tema">
+                    <optgroup label="Geral">
+                        <option value="Novela">Novela</option>
+                        <option value="Hq">Hq</option>
+                        <option value="Reality">Reality</option>
+                        <option value="Animação">Animação</option>
+                        <option value="Liveaction">Liveaction</option>
+                        <option value="+Nerd">+Nerd</option>
+                    </optgroup>
+                    <optgroup label="Anime">
+                        <option value="Temporada de Outono">Temporada de Outono</option>
+                        <option value="Melhores de 2024">Melhores de 2024</option>
+                        <option value="Guia Crunchyroll">Guia Crunchyroll</option>
+                    </optgroup>
+                    <optgroup label="Cinema, Séries e Streaming">
+                        <option value="DC">DC</option>
+                        <option value="Marvel">Marvel</option>
+                        <option value="Netflix">Netflix</option>
+                        <option value="Amazon Prime">Amazon Prime</option>
+                        <option value="HBO Max">HBO Max</option>
+                        <option value="Apple TV">Apple TV</option>
+                        <option value="Paramount">Paramount</option>
+                        <option value="Disney Plus">Disney Plus</option>
+                        <option value="Globo Play">Globo Play</option>
+                        <option value="Cinema">Cinema</option>
+                    </optgroup>
+                </select>
+
+                <div style="display: flex; gap: 10px;">
+                    <div style="flex: 2;"><label>Título:</label><input type="text" id="titulo"></div>
+                    <div style="flex: 1;">
+                        <label>Fonte Título:</label>
+                        <select id="fonteTitulo">
+                            <option value="'Roboto'">Roboto</option>
+                            <option value="'Orbitron'">Orbitron</option>
+                            <option value="'Playfair Display'">Serif</option>
+                            <option value="'JetBrains Mono'">Monospace</option>
+                        </select>
+                    </div>
+                </div>
+
+                <label>Imagem da Capa:</label>
+                <input type="file" id="foto" accept="image/*">
+                <label>URL de Vídeo (Opcional):</label>
+                <input type="text" id="urlVideo" placeholder="https://www.youtube.com/watch?v=...">
                 <img id="preview">
-                <label>Conteúdo:</label><textarea id="conteudo" rows="8"></textarea>
-                <label>Autor:</label><input type="text" id="autor" placeholder="@seuinsta">
-                <button class="btn-publicar" onclick="publicar()">PUBLICAR EM CONTEUDO.HTML</button>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+                    <label style="margin-top: 0;">Conteúdo:</label>
+                    <select id="fonteConteudo" style="width: auto; padding: 5px; margin-top: 0; font-size: 13px;">
+                        <option value="'Roboto'">Fonte Legenda: Roboto</option>
+                        <option value="'JetBrains Mono'">Fonte Legenda: Mono</option>
+                    </select>
+                </div>
+                <textarea id="conteudo" rows="8"></textarea>
+
+                <div style="display: flex; gap: 10px;">
+                    <div style="flex: 1;"><label>Autor:</label><input type="text" id="autor" placeholder="@seuinsta">
+                    </div>
+                    <div style="flex: 1;"><label>Data Manual:</label><input type="text" id="dataManual"
+                            placeholder="29/03/2026"></div>
+                </div>
+
+                <button class="btn-publicar" id="btn-acao" onclick="publicarSupabase()">PUBLICAR NO SUPABASE</button>
+            </div>
+
+            <div class="gerenciar-noticias">
+                <h3><i class="fa-solid fa-gears"></i> Gerenciar Postagens</h3>
+                <div id="lista-gerenciamento"></div>
             </div>
         </section>
 
         <aside class="coluna-lateral">
             <div class="conteudo-lateral">
-                <h3>Redes Sociais</h3>
-                <div class="redes-sociais"><a href="#">Instagram</a><a href="#">YouTube</a><a href="#">WhatsApp</a>
-                </div>
+                <h3><i class="fa-solid fa-clock-rotate-left"></i> Antigas</h3>
+                <div id="lateral-antigas" class="links-destaque"></div>
             </div>
             <div class="conteudo-lateral">
-                <h3>Críticas</h3>
-                <p style="font-size: 0.9em;">Review: Deadpool & Wolverine...</p>
+                <h3><i class="fa-solid fa-tv"></i> Plataformas</h3>
+                <div id="lateral-plataformas" class="links-destaque"></div>
             </div>
         </aside>
     </main>
 
     <script>
-        const fotoInput = document.getElementById('foto');
-        const preview = document.getElementById('preview');
+        const { createClient } = supabase;
+        const _supabase = createClient("https://xkngtsnzkbmfsugahtsa.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhrbmd0c256a2JtZnN1Z2FodHNhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4OTA2MTcsImV4cCI6MjA5MDQ2NjYxN30.zrk4-ckiw50zUdt1JrTD13SlSLNh1Upn5C7nm12jWEA");
+
         let imagemBase64 = "";
 
-        fotoInput.addEventListener('change', function () {
+        window.onload = () => carregarDados();
+
+        document.getElementById('foto').addEventListener('change', function () {
             const reader = new FileReader();
-            reader.onload = function () { imagemBase64 = reader.result; preview.src = reader.result; preview.style.display = 'block'; }
-            if (fotoInput.files[0]) reader.readAsDataURL(fotoInput.files[0]);
+            reader.onload = function () {
+                imagemBase64 = reader.result;
+                document.getElementById('preview').src = reader.result;
+                document.getElementById('preview').style.display = 'block';
+            }
+            if (this.files[0]) reader.readAsDataURL(this.files[0]);
         });
 
-        function publicar() {
-            const titulo = document.getElementById('titulo').value;
-            const conteudo = document.getElementById('conteudo').value;
-            const autor = document.getElementById('autor').value;
-            if (!titulo || !conteudo || !imagemBase64) return alert("Preencha tudo!");
+        async function carregarDados() {
+            const { data: noticias, error } = await _supabase.from('noticias').select('*').order('timestamp', { ascending: false });
+            if (error) return console.error(error);
 
-            const data = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
-            const novaNoticia = { titulo, conteudo, autor, data, imagem: imagemBase64 };
+            // Restaurando Gerenciamento
+            const listContainer = document.getElementById('lista-gerenciamento');
+            listContainer.innerHTML = noticias.map(n => `
+                <div class="item-noticia">
+                    <span><strong>[${n.tema}]</strong> ${n.titulo.substring(0, 30)}...</span>
+                    <div class="btns-acoes">
+                        <button class="btn-edit" onclick="prepararEdicao('${n.id}')">Editar</button>
+                        <button class="btn-del" onclick="excluirPost('${n.id}')">Excluir</button>
+                    </div>
+                </div>
+            `).join('');
 
-            const noticias = JSON.parse(localStorage.getItem('noticias-wuool')) || [];
-            noticias.unshift(novaNoticia);
-            localStorage.setItem('noticias-wuool', JSON.stringify(noticias));
+            // Unilaterais
+            const cats = { animes: [], nerd: [], plataformas: [], antigas: [] };
+            noticias.forEach(n => {
+                const t = n.tema;
+                if (["Temporada de Outono", "Melhores de 2024", "Guia Crunchyroll"].includes(t)) cats.animes.push(n);
+                else if (t === "+Nerd") cats.nerd.push(n);
+                else if (["DC", "Marvel", "Netflix", "Amazon Prime", "HBO Max", "Apple TV", "Paramount", "Disney Plus", "Globo Play", "Cinema"].includes(t)) cats.plataformas.push(n);
+                else cats.antigas.push(n);
+            });
 
-            alert("Sucesso! Indo para a página de conteúdo...");
-            window.location.href = "conteudo.html";
+            const render = (id, lista) => {
+                document.getElementById(id).innerHTML = lista.slice(0, 5).map(n => `<a href="#">${n.titulo}</a>`).join('');
+            };
+
+            render('lateral-animes', cats.animes);
+            render('lateral-maisnerd', cats.nerd);
+            render('lateral-plataformas', cats.plataformas);
+            render('lateral-antigas', cats.antigas);
+        }
+
+        async function publicarSupabase() {
+            const id = document.getElementById('edit-id').value;
+            const btn = document.getElementById('btn-acao');
+            btn.innerText = "PROCESSANDO...";
+            btn.disabled = true;
+
+            const noticia = {
+                tema: document.getElementById('tema').value,
+                titulo: document.getElementById('titulo').value,
+                fonte_titulo: document.getElementById('fonteTitulo').value,
+                conteudo: document.getElementById('conteudo').value,
+                fonte_conteudo: document.getElementById('fonteConteudo').value,
+                autor: document.getElementById('autor').value,
+                video: document.getElementById('urlVideo').value,
+                data: document.getElementById('dataManual').value,
+                imagem: imagemBase64 || document.getElementById('preview').src
+            };
+
+            let res;
+            if (id) res = await _supabase.from('noticias').update(noticia).eq('id', id);
+            else res = await _supabase.from('noticias').insert([noticia]);
+
+            if (res.error) alert("Erro: " + res.error.message);
+            else {
+                alert(id ? "Atualizado!" : "Publicado!");
+                location.reload();
+            }
+        }
+
+        async function prepararEdicao(id) {
+            const { data: n } = await _supabase.from('noticias').select('*').eq('id', id).single();
+            if (n) {
+                document.getElementById('edit-id').value = n.id;
+                document.getElementById('titulo').value = n.titulo;
+                document.getElementById('tema').value = n.tema;
+                document.getElementById('conteudo').value = n.conteudo;
+                document.getElementById('autor').value = n.autor || "";
+                document.getElementById('dataManual').value = n.data || "";
+                document.getElementById('urlVideo').value = n.video || "";
+                document.getElementById('fonteTitulo').value = n.fonte_titulo || "'Roboto'";
+                document.getElementById('fonteConteudo').value = n.fonte_conteudo || "'Roboto'";
+                document.getElementById('preview').src = n.imagem;
+                document.getElementById('preview').style.display = 'block';
+
+                document.getElementById('form-title').innerHTML = "<i class='fa-solid fa-pen-to-square'></i> Editando Notícia";
+                document.getElementById('btn-acao').innerText = "SALVAR ALTERAÇÕES";
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        async function excluirPost(id) {
+            if (confirm("Deseja realmente excluir esta postagem do banco de dados?")) {
+                const { error } = await _supabase.from('noticias').delete().eq('id', id);
+                if (error) alert("Erro ao excluir");
+                else carregarDados();
+            }
         }
     </script>
 </body>
